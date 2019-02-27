@@ -19,15 +19,23 @@ func main() {
 	duplicates := flag.Int("dups", 1, "How many of this kind of problem to generate")
 	flag.Parse()
 	for i := 0; i < *duplicates; i++ {
+		// randomly generate items based on params provided
 		items := binpacking.GenerateItems(*itemCount, *itemMaxSize, *itemCenter, binpacking.Variability(*itemVariability))
 
+		// calculate lower bound for most optimal solution
+		tmp := make(binpacking.Items, len(items))
+		copy(tmp, items)
+		lowerBound := binpacking.CalculateLowerBound(tmp, binpacking.Size(*itemMaxSize))
+
+		// create packing list
 		packingList := binpacking.PackingList{
 			Size:        binpacking.Size(*itemMaxSize),
 			Count:       binpacking.Count(*itemCount),
 			Center:      *itemCenter,
 			Variability: binpacking.Variability(*itemVariability),
 			Algorithm:   binpacking.GetAlgorithm(*algorithm),
-			Items:       items}
+			Items:       items,
+			LowerBound:  lowerBound}
 
 		jsonValue, err := json.MarshalIndent(packingList, "", "  ")
 		if err != nil {

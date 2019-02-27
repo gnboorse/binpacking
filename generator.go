@@ -34,10 +34,12 @@ func GenerateItems(itemCount, maxItemSize, itemCenter int, variability Variabili
 	items := make(Items, itemCount)
 	for i := 0; i < itemCount; i++ {
 		item := int(math.Round(NormalRandom(r, sigma, float64(itemCenter))))
-		if item <= 0 { //minItemSize
-			item = 1
-		} else if item >= maxItemSize {
-			item = maxItemSize - 1
+		for {
+			if item > 0 && item < maxItemSize {
+				break
+			}
+			// force generation within bounds
+			item = int(math.Round(NormalRandom(r, sigma, float64(itemCenter))))
 		}
 		items[i] = Item(item)
 	}

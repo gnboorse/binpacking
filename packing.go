@@ -11,5 +11,6 @@ type PackingList struct {
 	// Items the actual items being passed in
 	Items       `json:"items"`
 	Variability `json:"variability"`
-	Center      int `json:"center"`
+	Center      int   `json:"center"`
+	LowerBound  Count `json:"lowerBound"`
 }
