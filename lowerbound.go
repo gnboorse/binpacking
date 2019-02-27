@@ -34,7 +34,7 @@ func CalculateLowerBound(items Items, binSize Size) Count {
 			}
 		}
 		s := 0 // sum of all items less than r
-		if r >= carry {
+		if r > carry {
 			// only remove items to consider if we have a carry < r
 			for _, sItem := range lessThanR {
 				s += int(sItem)
