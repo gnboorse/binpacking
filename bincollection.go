@@ -8,13 +8,7 @@ import (
 // BinCollection an interface representing an instance
 // of the bin packing problem.
 type BinCollection interface {
-	NewBin() *Bin
-	PackItem(item Item)
 	PackAll(items Items)
-	GetBin(index int) *Bin
-	GetFirstBin() *Bin
-	GetLastBin() *Bin
-	Find(predicate func(*Bin) bool) *Bin
 	GetTotalBins() Count
 	GetBinCapacity() Size
 	String() string
@@ -23,6 +17,15 @@ type BinCollection interface {
 // NewBinCollection create an instance of the bin packing problem
 // from a PackingList object
 func NewBinCollection(pList *PackingList) BinCollection {
+	if pList.Algorithm == PackingConstraint {
+		collection := &ConstraintPackingImpl{
+			BinCapacity: pList.Size,
+			TotalBins:   pList.LowerBound,
+			Bins:        make(Bins, int(pList.LowerBound)), // pre-allocate memory
+			Algorithm:   pList.Algorithm}
+		return collection
+	}
+	// else
 	collection := &BinCollectionImpl{
 		BinCapacity: pList.Size,
 		TotalBins:   0,
@@ -30,8 +33,8 @@ func NewBinCollection(pList *PackingList) BinCollection {
 		Algorithm:   pList.Algorithm}
 
 	collection.NewBin() // always create first bin
-
 	return collection
+
 }
 
 // BinCollectionImpl default implementation of an

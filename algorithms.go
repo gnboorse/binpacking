@@ -16,9 +16,13 @@ const (
 	BestFit
 	// BestFitDecreasing first sorts objects by size (decreasing) and then applies BestFit
 	BestFitDecreasing
+	// PackingConstraint algorithm used to solve the bin packing problem using constraints
+	PackingConstraint
+	// BinCompletion completion algorithm
+	BinCompletion
 )
 
-var names = []string{"Unknown", "NextFit", "FirstFit", "FirstFitDecreasing", "BestFit", "BestFitDecreasing"}
+var names = []string{"Unknown", "NextFit", "FirstFit", "FirstFitDecreasing", "BestFit", "BestFitDecreasing", "PackingConstraint", "BinCompletion"}
 
 func (algorithm Algorithm) String() string {
 	return names[algorithm]

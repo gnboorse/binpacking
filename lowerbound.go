@@ -8,8 +8,8 @@ import (
 // CalculateLowerBound calculate the estimated lower bound
 // on the minimum (optimal) number of bins that should be
 // used in a problem instance.
-// This is the basic algorithm used by Richard E. Korf in
-// his first Bin Completion paper.
+// This is the Estimated Wasted Space algorithm used by Richard E. Korf
+// in his first Bin Completion paper.
 func CalculateLowerBound(items Items, binSize Size) Count {
 	sort.Sort(sort.Reverse(items)) // sort items in decreasing order
 	waste := 0                     // total space wasted in the ideal solution

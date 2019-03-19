@@ -1,7 +1,7 @@
 package binpacking
 
 // BestFitPack pack a single item using the best fit algorithm
-func BestFitPack(binCollection BinCollection, item Item) {
+func BestFitPack(binCollection *BinCollectionImpl, item Item) {
 
 	// find the bin with the smallest non-negative remaining space after adding the item
 	smallestRemainderIndex := 0
@@ -29,6 +29,6 @@ func BestFitPack(binCollection BinCollection, item Item) {
 }
 
 // BestFitDecreasingPack pack the next item using the best fit decreasing algorithm
-func BestFitDecreasingPack(binCollection BinCollection, item Item) {
+func BestFitDecreasingPack(binCollection *BinCollectionImpl, item Item) {
 	BestFitPack(binCollection, item)
 }
