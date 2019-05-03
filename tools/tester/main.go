@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"io/ioutil"
 
 	"github.com/gnboorse/binpacking"
@@ -12,6 +11,7 @@ import (
 func main() {
 	// main entrypoint for running bin packing problems
 	inputFile := flag.String("file", "input.json", "File to run.")
+	outputFile := flag.String("output", "output.json", "Output file for results.")
 	flag.Parse()
 	b, err := ioutil.ReadFile(*inputFile)
 	if err != nil {
@@ -28,5 +28,12 @@ func main() {
 
 	problem.PackAll(packingList.Items)
 
-	fmt.Printf("Problem solution was: %s\n", problem)
+	jsonValue, err := json.MarshalIndent(problem, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(*outputFile, jsonValue, 0644)
+	if err != nil {
+		panic(err)
+	}
 }
