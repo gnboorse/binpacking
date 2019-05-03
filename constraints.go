@@ -15,10 +15,11 @@ import (
 // ConstraintPackingImpl implementation of Bin Collection
 // that uses constraint programming
 type ConstraintPackingImpl struct {
-	BinCapacity Size  `json:"capacity"`
-	TotalBins   Count `json:"count"`
-	Bins        `json:"bins"`
-	Algorithm   `json:"algorithm"`
+	BinCapacity  Size  `json:"capacity"`
+	TotalBins    Count `json:"count"`
+	Bins         `json:"bins"`
+	Algorithm    `json:"algorithm"`
+	SolutionTime int64 `json:"solution_time"`
 }
 
 // PackAll solve the underlying bin packing problem using constraint programming
@@ -297,4 +298,9 @@ func (binCollection *ConstraintPackingImpl) GetBinCapacity() Size {
 func (binCollection *ConstraintPackingImpl) String() string {
 	jsonString, _ := json.MarshalIndent(binCollection, "", "  ")
 	return string(jsonString)
+}
+
+// SetTime set the execution time for a single run
+func (binCollection *ConstraintPackingImpl) SetTime(nanoseconds int64) {
+	binCollection.SolutionTime = nanoseconds
 }

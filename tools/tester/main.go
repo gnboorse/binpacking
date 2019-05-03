@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"time"
 
 	"github.com/gnboorse/binpacking"
 )
@@ -26,7 +27,12 @@ func main() {
 
 	problem := binpacking.NewBinCollection(&packingList)
 
+	start := time.Now()
+	// time how long it takes to pack
 	problem.PackAll(packingList.Items)
+	elapsed := time.Since(start)
+	// set duration of run
+	problem.SetTime(elapsed.Nanoseconds())
 
 	jsonValue, err := json.MarshalIndent(problem, "", "  ")
 	if err != nil {

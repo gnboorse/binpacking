@@ -11,6 +11,7 @@ type BinCollection interface {
 	PackAll(items Items)
 	GetTotalBins() Count
 	GetBinCapacity() Size
+	SetTime(nanoseconds int64)
 	String() string
 }
 
@@ -40,10 +41,11 @@ func NewBinCollection(pList *PackingList) BinCollection {
 // BinCollectionImpl default implementation of an
 // instance of the bin packing problem
 type BinCollectionImpl struct {
-	BinCapacity Size  `json:"capacity"`
-	TotalBins   Count `json:"count"`
-	Bins        `json:"bins"`
-	Algorithm   `json:"algorithm"`
+	BinCapacity  Size  `json:"capacity"`
+	TotalBins    Count `json:"count"`
+	Bins         `json:"bins"`
+	Algorithm    `json:"algorithm"`
+	SolutionTime int64 `json:"solution_time"`
 }
 
 // GetTotalBins getter for the total number of bins
@@ -124,4 +126,9 @@ func (binCollection *BinCollectionImpl) Find(predicate func(*Bin) bool) *Bin {
 func (binCollection *BinCollectionImpl) String() string {
 	jsonString, _ := json.MarshalIndent(binCollection, "", "  ")
 	return string(jsonString)
+}
+
+// SetTime set the execution time for a single run
+func (binCollection *BinCollectionImpl) SetTime(nanoseconds int64) {
+	binCollection.SolutionTime = nanoseconds
 }
