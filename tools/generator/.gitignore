@@ -1,2 +1,11 @@
 *.tar
 generator
+Unknown
+NextFit
+FirstFit
+FirstFitDecreasing
+BestFit
+BestFitDecreasing
+PackingConstraint
+BinCompletion
+ModifiedFirstFitDecreasing
