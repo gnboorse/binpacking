@@ -14,7 +14,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Run all instances of a given algorithm.')
     parser.add_argument(
-        'algorithm', help="The algorithm to run all instances for.")
+        '--algorithm', '-a', help="The algorithm to run all instances for.")
     args = parser.parse_args()
 
     # create results directory
