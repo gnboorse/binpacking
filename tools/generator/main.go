@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/gnboorse/binpacking"
 )
@@ -17,6 +19,7 @@ func main() {
 	itemVariability := flag.Int("variability", int(binpacking.LowVariability), "Measure of the variability of values (should be 1, 2, or 3)")
 	algorithm := flag.String("algorithm", "NextFit", "The name of the algorithm to use when solving the problem")
 	duplicates := flag.Int("dups", 1, "How many of this kind of problem to generate")
+	outputDirectory := flag.String("output", "json", "Directory to put files in.")
 	flag.Parse()
 	for i := 0; i < *duplicates; i++ {
 		// randomly generate items based on params provided
@@ -41,8 +44,11 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		filename := fmt.Sprintf("binpacking%v_%vcount_%vmax_%vcenter_%vvariability_%s.json",
-			i, *itemCount, *itemMaxSize, *itemCenter, *itemVariability, packingList.Algorithm)
+		newpath := filepath.Join(".", *outputDirectory)
+		os.MkdirAll(newpath, os.ModePerm)
+		filename := fmt.Sprintf("%v/binpacking%v_%vcount_%vmax_%vcenter_%vvariability_%s.json",
+			*outputDirectory, i, *itemCount, *itemMaxSize,
+			*itemCenter, *itemVariability, packingList.Algorithm)
 		err = ioutil.WriteFile(filename, jsonValue, 0644)
 		if err != nil {
 			panic(err)

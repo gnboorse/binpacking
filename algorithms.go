@@ -20,9 +20,20 @@ const (
 	PackingConstraint
 	// BinCompletion completion algorithm
 	BinCompletion
+	// ModifiedFirstFitDecreasing the modified first fit decreasing algorithm invented by Johnson and Garey
+	ModifiedFirstFitDecreasing
 )
 
-var names = []string{"Unknown", "NextFit", "FirstFit", "FirstFitDecreasing", "BestFit", "BestFitDecreasing", "PackingConstraint", "BinCompletion"}
+var names = []string{
+	"Unknown",
+	"NextFit",
+	"FirstFit",
+	"FirstFitDecreasing",
+	"BestFit",
+	"BestFitDecreasing",
+	"PackingConstraint",
+	"BinCompletion",
+	"ModifiedFirstFitDecreasing"}
 
 func (algorithm Algorithm) String() string {
 	return names[algorithm]

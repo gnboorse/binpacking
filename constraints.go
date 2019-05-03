@@ -236,15 +236,16 @@ func GetSumConstraintFunction(j, itemCount, capacity int) func(variables *centip
 		for i := 0; i < itemCount; i++ {
 			siVariableName := centipede.VariableName("S" + strconv.Itoa(i))
 			siVariable := variables.Find(siVariableName)
-			if !siVariable.Empty {
-
-				xijVariableName := centipede.VariableName("X" + strconv.Itoa(i) + "_" + strconv.Itoa(j))
-				xijVariable := variables.Find(xijVariableName)
-				if !xijVariable.Empty {
-					// sum is sigma(xij * si)
-					runningSum += (siVariable.Value.(int) * xijVariable.Value.(int))
-				}
+			if siVariable.Empty {
+				return true
 			}
+			xijVariableName := centipede.VariableName("X" + strconv.Itoa(i) + "_" + strconv.Itoa(j))
+			xijVariable := variables.Find(xijVariableName)
+			if xijVariable.Empty {
+				return true
+			}
+			// sum is sigma(xij * si)
+			runningSum += (siVariable.Value.(int) * xijVariable.Value.(int))
 		}
 		// li = sum of loads
 		return runningSum <= capacity
