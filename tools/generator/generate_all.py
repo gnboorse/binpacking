@@ -18,7 +18,7 @@ ALGORITHMS = [
     "ModifiedFirstFitDecreasing"
 ]
 
-DUPLICATES = 100
+DUPLICATES = 10000
 
 def main():
     # iterate through algorithms
@@ -39,10 +39,10 @@ def main():
                         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
                         output, error = process.communicate()
 
-        print(f'Making tar file: {algorithm}.tar')
-        shutil.make_archive(algorithm, 'tar', algorithm)
-        print(f'Removing directory: {algorithm}')
-        shutil.rmtree(algorithm)
+        # print(f'Making tar file: {algorithm}.tar')
+        # shutil.make_archive(algorithm, 'tar', algorithm)
+        # print(f'Removing directory: {algorithm}')
+        # shutil.rmtree(algorithm)
 
 if __name__ == '__main__':
     main()
