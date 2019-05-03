@@ -1,1 +1,0 @@
-'%s/binpacking%s_%scount_%smax_%scenter_%svariability_%s.json'
