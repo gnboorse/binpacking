@@ -26,14 +26,16 @@ func NewBinCollection(pList *PackingList) BinCollection {
 			Algorithm:   pList.Algorithm}
 		return collection
 	}
-	// else
+
 	collection := &BinCollectionImpl{
 		BinCapacity: pList.Size,
 		TotalBins:   0,
 		Bins:        make(Bins, 0, (pList.Count/2)+1), // pre-allocate memory for a reasonably large capacity
 		Algorithm:   pList.Algorithm}
 
-	collection.NewBin() // always create first bin
+	if pList.Algorithm != ModifiedFirstFitDecreasing {
+		collection.NewBin() // always create first bin if not MFFD
+	}
 	return collection
 
 }
@@ -70,11 +72,16 @@ func (binCollection *BinCollectionImpl) NewBin() *Bin {
 func (binCollection *BinCollectionImpl) PackAll(items Items) {
 	// reverse sort for algorithms that require it
 	if binCollection.Algorithm == FirstFitDecreasing ||
-		binCollection.Algorithm == BestFitDecreasing {
+		binCollection.Algorithm == BestFitDecreasing ||
+		binCollection.Algorithm == ModifiedFirstFitDecreasing {
 		sort.Sort(sort.Reverse(items))
 	}
-	for _, item := range items {
-		binCollection.PackItem(item)
+	if binCollection.Algorithm == ModifiedFirstFitDecreasing {
+		binCollection.PackAllMFFD(items)
+	} else {
+		for _, item := range items {
+			binCollection.PackItem(item)
+		}
 	}
 }
 
