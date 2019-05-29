@@ -2,6 +2,8 @@ package binpacking
 
 import (
 	"encoding/json"
+	"fmt"
+	"math"
 	"sort"
 )
 
@@ -18,23 +20,21 @@ type BinCollection interface {
 // NewBinCollection create an instance of the bin packing problem
 // from a PackingList object
 func NewBinCollection(pList *PackingList) BinCollection {
-	if pList.Algorithm == PackingConstraint {
-		collection := &ConstraintPackingImpl{
-			BinCapacity: pList.Size,
-			TotalBins:   pList.LowerBound,
-			Bins:        make(Bins, int(pList.LowerBound)), // pre-allocate memory
-			Algorithm:   pList.Algorithm}
-		return collection
-	}
 
 	collection := &BinCollectionImpl{
 		BinCapacity: pList.Size,
 		TotalBins:   0,
-		Bins:        make(Bins, 0, (pList.Count/2)+1), // pre-allocate memory for a reasonably large capacity
+		Bins:        make(Bins, 0), // pre-allocate memory for a reasonably large capacity
 		Algorithm:   pList.Algorithm}
 
-	if pList.Algorithm != ModifiedFirstFitDecreasing {
-		collection.NewBin() // always create first bin if not MFFD
+	// init bins for packing constraint
+	if pList.Algorithm == PackingConstraint {
+		roundedLowerBound := int(math.Round(float64(pList.LowerBound) * 1.2))
+		for i := 0; i < roundedLowerBound; i++ {
+			collection.NewBin() // add new bins for all of them
+		}
+	} else if pList.Algorithm != ModifiedFirstFitDecreasing {
+		collection.NewBin() // always create first bin if not MFFD or constraint
 	}
 	return collection
 
@@ -73,16 +73,20 @@ func (binCollection *BinCollectionImpl) PackAll(items Items) {
 	// reverse sort for algorithms that require it
 	if binCollection.Algorithm == FirstFitDecreasing ||
 		binCollection.Algorithm == BestFitDecreasing ||
-		binCollection.Algorithm == ModifiedFirstFitDecreasing {
+		binCollection.Algorithm == ModifiedFirstFitDecreasing ||
+		binCollection.Algorithm == PackingConstraint {
 		sort.Sort(sort.Reverse(items))
 	}
 	if binCollection.Algorithm == ModifiedFirstFitDecreasing {
 		binCollection.PackAllMFFD(items)
+	} else if binCollection.Algorithm == PackingConstraint {
+		binCollection.PackAllConstraint(items)
 	} else {
 		for _, item := range items {
 			binCollection.PackItem(item)
 		}
 	}
+	binCollection.cleanupBins()
 }
 
 // GetFirstBin getter for the first bin created
@@ -115,6 +119,7 @@ func (binCollection *BinCollectionImpl) PackItem(item Item) {
 		BestFitDecreasingPack(binCollection, item)
 	default:
 		// do nothing here. Algorithm not supported
+		panic(fmt.Errorf("unsupported algorithm for PackItem: %v", binCollection.Algorithm))
 	}
 }
 
@@ -138,4 +143,27 @@ func (binCollection *BinCollectionImpl) String() string {
 // SetTime set the execution time for a single run
 func (binCollection *BinCollectionImpl) SetTime(nanoseconds int64) {
 	binCollection.SolutionTime = nanoseconds
+}
+
+// cleanupBins convenience method used to clean out unused bins from the list
+func (binCollection *BinCollectionImpl) cleanupBins() {
+
+	for {
+		emptyIndex := -1
+		for i := 0; i < int(binCollection.GetTotalBins()); i++ {
+			bin := binCollection.GetBin(i)
+			if bin.Usage == 0 && len(bin.Items) == 0 {
+				// empty bin.
+				emptyIndex = i
+			}
+		}
+		if emptyIndex >= 0 {
+			binCollection.Bins[emptyIndex] = binCollection.Bins[len(binCollection.Bins)-1] // Copy last element to index i.
+			binCollection.Bins[len(binCollection.Bins)-1] = Bin{}                          // Erase last element (write zero value).
+			binCollection.Bins = binCollection.Bins[:len(binCollection.Bins)-1]
+			binCollection.TotalBins--
+		} else {
+			break
+		}
+	}
 }
