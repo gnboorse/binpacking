@@ -6,7 +6,7 @@ import os
 import os.path
 import json
 from tqdm import tqdm
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, BigInteger
+from sqlalchemy import Table, Column, Integer, String, MetaData, Float
 import shutil
 
 
@@ -72,7 +72,8 @@ def main():
                                       Column('lower_bound', Integer),
                                       Column('algorithm', Integer),
                                       Column('solution_bin_count', Integer),
-                                      Column('solution_time', Integer))
+                                      Column('solution_time', Integer),
+                                      Column('solution_optimality', Float))
 
     metadata.create_all(sql_engine)
     conn = sql_engine.connect()
@@ -98,6 +99,7 @@ def main():
                 data_dict['algorithm'] = test_case_data['algorithm']
                 data_dict['solution_bin_count'] = test_results_data['count']
                 data_dict['solution_time'] = test_results_data['solution_time']
+                data_dict['solution_optimality'] = round(float(data_dict['solution_bin_count']) / float(data_dict['lower_bound']), ndigits=5)
 
                 # add data to batch
                 batch_holder.append(data_dict)
