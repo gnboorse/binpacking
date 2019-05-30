@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
 
     # create results directory
-    results_dirname = f'{args.file.upper()}_RESULTS/'
+    results_dirname = f'{args.file.upper().strip("/")}_RESULTS/'
     if not os.path.exists(results_dirname):
         print(f'Making directory: {results_dirname}')
         os.mkdir(results_dirname)
