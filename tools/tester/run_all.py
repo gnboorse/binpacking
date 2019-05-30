@@ -5,7 +5,7 @@ Script used for running all instances in a given directory of test cases.
 '''
 import os.path
 import argparse
-import tqdm
+from tqdm import tqdm
 import shutil
 import subprocess
 
